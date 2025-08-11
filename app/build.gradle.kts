@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.compiler)
     id("kotlin-android")
+    // Temporarily removed Hilt plugins
 }
 
 android {
@@ -23,7 +24,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro'")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
     buildFeatures {
@@ -67,6 +68,11 @@ dependencies {
 
     // Material
     implementation(libs.androidx.compose.material3)
+    
+    // Foundation for additional layout capabilities
+    implementation(libs.androidx.compose.foundation)
+
+    // Temporarily removed Hilt dependencies
 
     // Testing
     testImplementation(libs.junit)

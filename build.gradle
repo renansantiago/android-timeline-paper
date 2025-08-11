@@ -7,9 +7,7 @@ buildscript {
     dependencies {
         classpath libs.android.gradle.plugin
         classpath libs.kotlin.gradle.plugin
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        // Removed Hilt classpath from here
     }
 }
 
@@ -17,6 +15,7 @@ plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.compose.compiler) apply false
+    // Removed Hilt plugin from here
 }
 
 task clean(type: Delete) {
