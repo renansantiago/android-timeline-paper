@@ -22,24 +22,11 @@ fun TimelineHeader(
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .padding(16.dp)
     ) {
-        Row(
-            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Timeline",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold
-            )
-            if (startDate != null) {
-                Spacer(modifier = Modifier.width(12.dp))
-                Text(
-                    text = SimpleDateFormat("MMM yyyy", Locale.getDefault()).format(startDate),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-        }
+        Text(
+            text = "Timeline",
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold
+        )
         Spacer(modifier = Modifier.weight(1f))
         Text(
             text = "Total duration: ${totalDuration} days",

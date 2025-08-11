@@ -16,34 +16,22 @@ fun TimelineScale(
     totalDuration: Long,
     startDate: Date? = null
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(vertical = 12.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+    Column(modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surface).padding(vertical = 12.dp)) {
+        if (startDate != null) {
+            val calendar = Calendar.getInstance()
+            calendar.time = startDate
+            val monthYear = SimpleDateFormat("MMM yyyy", Locale.getDefault()).format(startDate)
+            
             Text(
-                text = "Timeline",
+                text = monthYear,
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
-            )
-            Text(
-                text = "Total duration: ${totalDuration} days",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
         }
         
         Spacer(modifier = Modifier.height(8.dp))
-        
-        val timelineWidth = maxOf(1000, (totalDuration * 20).toInt()) - 32
+        val timelineWidth = maxOf(1000, (totalDuration * 20).toInt())
         
         Box(
             modifier = Modifier
@@ -64,29 +52,35 @@ fun TimelineScale(
                         currentDate.time = startDate
                         currentDate.add(Calendar.DAY_OF_YEAR, i)
                         
-                        val position = (i.toFloat() / totalDuration.toFloat())
                         val dayOfMonth = currentDate.get(Calendar.DAY_OF_MONTH)
                         
                         // Show day markers every few days
                         if (i % 3 == 0 || i == totalDuration.toInt()) {
+                            val position = (i.toFloat() / totalDuration.toFloat())
+                            
                             Box(
                                 modifier = Modifier
-                                    .offset(x = (position * (timelineWidth)).dp)
+                                    .offset(x = (position * (timelineWidth - 32)).dp)
                                     .width(1.dp)
                                     .height(if (i % 6 == 0) 20.dp else 10.dp)
                                     .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.6f))
                             )
                             
                             if (i % 6 == 0) {
-                                Text(
-                                    text = "${dayOfMonth}",
-                                    style = MaterialTheme.typography.bodySmall,
+                                Box(
                                     modifier = Modifier
                                         .offset(
-                                            x = (position * (timelineWidth)).dp - 8.dp,
+                                            x = (position * (timelineWidth - 32)).dp - 16.dp,
                                             y = 24.dp
                                         )
-                                )
+                                        .width(32.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "${dayOfMonth}",
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+                                }
                             }
                         }
                     }
