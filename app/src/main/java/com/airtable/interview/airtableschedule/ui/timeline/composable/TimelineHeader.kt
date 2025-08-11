@@ -8,20 +8,38 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
-fun TimelineHeader(totalDuration: Long) {
+fun TimelineHeader(
+    totalDuration: Long,
+    startDate: Date? = null
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .padding(16.dp)
     ) {
-        Text(
-            text = "Timeline",
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold
-        )
+        Row(
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Timeline",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold
+            )
+            if (startDate != null) {
+                Spacer(modifier = Modifier.width(12.dp))
+                Text(
+                    text = SimpleDateFormat("MMM yyyy", Locale.getDefault()).format(startDate),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        }
         Spacer(modifier = Modifier.weight(1f))
         Text(
             text = "Total duration: ${totalDuration} days",

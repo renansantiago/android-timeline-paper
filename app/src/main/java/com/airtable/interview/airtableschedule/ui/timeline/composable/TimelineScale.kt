@@ -8,10 +8,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun TimelineScale(
-    totalDuration: Long
+    totalDuration: Long,
+    startDate: Date? = null
 ) {
     Column(
         modifier = Modifier
@@ -52,26 +55,40 @@ fun TimelineScale(
                     .width(timelineWidth.dp)
                     .padding(horizontal = 16.dp)
             ) {
-                for (i in 0..10) {
-                    val position = (i.toFloat() / 10f)
-                    val days = (i * totalDuration / 10)
-                    Box(
-                        modifier = Modifier
-                            .offset(x = (position * (timelineWidth)).dp)
-                            .width(1.dp)
-                            .height(if (i % 2 == 0) 20.dp else 10.dp)
-                            .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.6f))
-                    )
-                    if (i % 2 == 0) {
-                        Text(
-                            text = "${days}d",
-                            style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier
-                                .offset(
-                                    x = (position * (timelineWidth)).dp - 12.dp,
-                                    y = 24.dp
+                if (startDate != null) {
+                    val calendar = Calendar.getInstance()
+                    calendar.time = startDate
+                    
+                    for (i in 0..totalDuration.toInt()) {
+                        val currentDate = Calendar.getInstance()
+                        currentDate.time = startDate
+                        currentDate.add(Calendar.DAY_OF_YEAR, i)
+                        
+                        val position = (i.toFloat() / totalDuration.toFloat())
+                        val dayOfMonth = currentDate.get(Calendar.DAY_OF_MONTH)
+                        
+                        // Show day markers every few days
+                        if (i % 3 == 0 || i == totalDuration.toInt()) {
+                            Box(
+                                modifier = Modifier
+                                    .offset(x = (position * (timelineWidth)).dp)
+                                    .width(1.dp)
+                                    .height(if (i % 6 == 0) 20.dp else 10.dp)
+                                    .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.6f))
+                            )
+                            
+                            if (i % 6 == 0) {
+                                Text(
+                                    text = "${dayOfMonth}",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    modifier = Modifier
+                                        .offset(
+                                            x = (position * (timelineWidth)).dp - 8.dp,
+                                            y = 24.dp
+                                        )
                                 )
-                        )
+                            }
+                        }
                     }
                 }
             }

@@ -21,7 +21,10 @@ fun TimelineView(
     Column(
         modifier = modifier.fillMaxWidth()
     ) {
-        TimelineHeader(uiState.totalDuration)
+        TimelineHeader(
+            totalDuration = uiState.totalDuration,
+            startDate = uiState.events.minOfOrNull { it.startDate }
+        )
         
         val scrollState = rememberScrollState()
         val timelineWidth = maxOf(1000, (uiState.totalDuration * 20).toInt())
@@ -34,7 +37,10 @@ fun TimelineView(
             Column(
                 modifier = Modifier.width(timelineWidth.dp)
             ) {
-                TimelineScale(uiState.totalDuration)
+                TimelineScale(
+                    totalDuration = uiState.totalDuration,
+                    startDate = uiState.events.minOfOrNull { it.startDate }
+                )
                 
                 Box(
                     modifier = Modifier

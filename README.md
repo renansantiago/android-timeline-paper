@@ -1,8 +1,12 @@
 # Airtable Timeline Assignment
 
+## Overview
+
+A modern Android timeline application built with Kotlin, Jetpack Compose, and MVVM architecture. The app provides an intuitive horizontal timeline view for managing and visualizing events with full CRUD functionality.
+
 ## Implementation Time
 
-Approximately 4.5 hours
+Approximately 4 hours
 
 ## What I Like About My Implementation
 
@@ -126,16 +130,3 @@ app/src/main/java/com/airtable/interview/airtableschedule/
 - **Feature-Based Organization**: Well-structured codebase organized by features
 - **Form Handling**: Robust form state management with validation
 - **Navigation**: Simple but effective screen navigation without external navigation libraries
-
-## Recent Updates
-
-- **Event Management**: Added complete event creation and editing functionality
-- **Horizontal Timeline**: Redesigned timeline for horizontal scrolling and better space utilization
-- **Event Types**: Implemented color-coded event categorization system
-- **Form Validation**: Added comprehensive form validation with user feedback
-- **Code Organization**: Restructured project for better maintainability and feature separation
-- **Synchronized Scrolling**: Fixed timeline scrolling to keep scale and events aligned
-- **Timeline Updates**: Fixed critical issue where timeline wasn't updating after event changes
-- **Shared Repository**: Implemented singleton pattern to ensure data consistency across ViewModels
-- **Toast Notifications**: Added success feedback when events are saved or updated
-- **Form State Management**: Proper form clearing between add/edit modes

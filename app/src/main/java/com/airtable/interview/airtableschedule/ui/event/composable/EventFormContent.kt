@@ -147,7 +147,22 @@ private fun DateSelector(
                 TextButton(
                     onClick = {
                         datePickerState.selectedDateMillis?.let { millis ->
-                            onDateSelected(Date(millis))
+                            // Create a Calendar instance and set it to the selected date
+                            // This ensures we get the correct local date without timezone issues
+                            val calendar = Calendar.getInstance()
+                            calendar.timeInMillis = millis
+                            
+                            // Create a new Date object with just the date components
+                            val localCalendar = Calendar.getInstance()
+                            localCalendar.set(calendar.get(Calendar.YEAR), 
+                                           calendar.get(Calendar.MONTH), 
+                                           calendar.get(Calendar.DAY_OF_MONTH))
+                            localCalendar.set(Calendar.HOUR_OF_DAY, 0)
+                            localCalendar.set(Calendar.MINUTE, 0)
+                            localCalendar.set(Calendar.SECOND, 0)
+                            localCalendar.set(Calendar.MILLISECOND, 0)
+                            
+                            onDateSelected(localCalendar.time)
                         }
                         showDatePicker = false
                     }
