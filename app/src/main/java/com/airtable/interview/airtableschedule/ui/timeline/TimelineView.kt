@@ -15,6 +15,7 @@ import com.airtable.interview.airtableschedule.ui.timeline.composable.TimelineSc
 @Composable
 fun TimelineView(
     uiState: TimelineUiState,
+    onEventClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -50,7 +51,8 @@ fun TimelineView(
                             TimelineEventBlock(
                                 timelineEvent = timelineEvent,
                                 maxLanes = uiState.maxLanes,
-                                totalWidth = uiState.totalDuration
+                                totalWidth = uiState.totalDuration,
+                                onEventClick = onEventClick
                             )
                         }
                     }

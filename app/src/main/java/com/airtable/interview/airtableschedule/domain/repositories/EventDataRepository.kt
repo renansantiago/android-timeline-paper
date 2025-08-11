@@ -5,4 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface EventDataRepository {
     fun getEvents(): Flow<List<Event>>
+    suspend fun saveEvent(event: Event)
 }

@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 class TimelineViewModel : ViewModel() {
     
-    private val eventRepository = EventDataRepositoryImpl()
+    private val eventRepository = EventDataRepositoryImpl.getInstance()
     private val timelineLayoutUseCase = TimelineLayoutUseCase()
     
     private val _uiState = MutableStateFlow(TimelineUiState())
@@ -21,21 +21,37 @@ class TimelineViewModel : ViewModel() {
         loadTimelineData()
     }
     
+    fun refreshTimelineData() {
+        loadTimelineData()
+    }
+    
     private fun loadTimelineData() {
         viewModelScope.launch {
             eventRepository.getEvents().collect { events ->
-                if (events.isNotEmpty()) {
-                    val timelineEvents = timelineLayoutUseCase.calculateTimelineLayout(events)
-                    val totalDuration = calculateTotalDuration(events)
-                    val maxLanes = timelineEvents.maxOfOrNull { it.lane }?.plus(1) ?: 0
-                    
-                    _uiState.value = TimelineUiState(
-                        events = events,
-                        timelineEvents = timelineEvents,
-                        totalDuration = totalDuration,
-                        maxLanes = maxLanes
-                    )
+                val timelineEvents = if (events.isNotEmpty()) {
+                    timelineLayoutUseCase.calculateTimelineLayout(events)
+                } else {
+                    emptyList()
                 }
+                
+                val totalDuration = if (events.isNotEmpty()) {
+                    calculateTotalDuration(events)
+                } else {
+                    0L
+                }
+                
+                val maxLanes = if (timelineEvents.isNotEmpty()) {
+                    timelineEvents.maxOfOrNull { it.lane }?.plus(1) ?: 0
+                } else {
+                    0
+                }
+                
+                _uiState.value = TimelineUiState(
+                    events = events,
+                    timelineEvents = timelineEvents,
+                    totalDuration = totalDuration,
+                    maxLanes = maxLanes
+                )
             }
         }
     }

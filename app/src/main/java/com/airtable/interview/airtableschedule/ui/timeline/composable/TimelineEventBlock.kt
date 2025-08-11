@@ -2,6 +2,7 @@ package com.airtable.interview.airtableschedule.ui.timeline.composable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -18,7 +19,8 @@ import java.util.*
 fun TimelineEventBlock(
     timelineEvent: TimelineEvent,
     maxLanes: Int,
-    totalWidth: Long
+    totalWidth: Long,
+    onEventClick: (String) -> Unit
 ) {
     val laneHeight = 50.dp
     val laneSpacing = 10.dp
@@ -54,6 +56,7 @@ fun TimelineEventBlock(
                 color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
                 shape = MaterialTheme.shapes.medium
             )
+            .clickable { onEventClick(timelineEvent.event.id) }
             .padding(8.dp),
         contentAlignment = Alignment.CenterStart
     ) {
