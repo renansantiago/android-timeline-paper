@@ -1,61 +1,59 @@
 package com.airtable.interview.airtableschedule.ui.timeline
 
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.Text
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.airtable.interview.airtableschedule.presentation.timeline.TimelineUiState
-import com.airtable.interview.airtableschedule.ui.timeline.composable.*
+import com.airtable.interview.airtableschedule.ui.timeline.composable.TimelineEventBlock
+import com.airtable.interview.airtableschedule.ui.timeline.composable.TimelineGridBackground
+import com.airtable.interview.airtableschedule.ui.timeline.composable.TimelineHeader
+import com.airtable.interview.airtableschedule.ui.timeline.composable.TimelineScale
 
 @Composable
 fun TimelineView(
     uiState: TimelineUiState,
     modifier: Modifier = Modifier
 ) {
-    if (uiState.events.isEmpty()) {
-        Box(
-            modifier = modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text("No events to display")
-        }
-        return
-    }
-
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(
+        modifier = modifier.fillMaxWidth()
+    ) {
         TimelineHeader(uiState.totalDuration)
-        TimelineScale(uiState.totalDuration)
         
-        // Timeline grid with events - now horizontally scrollable
+        val scrollState = rememberScrollState()
+        val timelineWidth = maxOf(1000, (uiState.totalDuration * 20).toInt())
+        
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height((uiState.maxLanes * 60 + 40).dp)
+                .horizontalScroll(scrollState)
         ) {
-            val scrollState = rememberScrollState()
-            val timelineWidth = maxOf(1000, (uiState.totalDuration * 20).toInt())
-            
-            Box(
-                modifier = Modifier
-                    .horizontalScroll(scrollState)
-                    .width(timelineWidth.dp)
-                    .padding(horizontal = 16.dp)
+            Column(
+                modifier = Modifier.width(timelineWidth.dp)
             ) {
-                TimelineGridBackground(uiState.totalDuration, uiState.maxLanes)
+                TimelineScale(uiState.totalDuration)
                 
-                // Render all timeline events
-                uiState.timelineEvents.forEach { timelineEvent ->
-                    TimelineEventBlock(
-                        timelineEvent = timelineEvent,
-                        maxLanes = uiState.maxLanes,
-                        totalWidth = uiState.totalDuration
-                    )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height((uiState.maxLanes * 60 + 40).dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp)
+                    ) {
+                        TimelineGridBackground(uiState.totalDuration, uiState.maxLanes)
+                        uiState.timelineEvents.forEach { timelineEvent ->
+                            TimelineEventBlock(
+                                timelineEvent = timelineEvent,
+                                maxLanes = uiState.maxLanes,
+                                totalWidth = uiState.totalDuration
+                            )
+                        }
+                    }
                 }
             }
         }

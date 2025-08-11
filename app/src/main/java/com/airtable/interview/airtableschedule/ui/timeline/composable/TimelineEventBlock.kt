@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.airtable.interview.airtableschedule.domain.models.TimelineEvent
 import java.text.SimpleDateFormat
@@ -24,13 +23,11 @@ fun TimelineEventBlock(
     val laneHeight = 50.dp
     val laneSpacing = 10.dp
     
-    // Calculate positions based on the actual timeline width
     val timelineWidth = maxOf(1000, (totalWidth * 20).toInt()) - 32
     val leftOffset = (timelineEvent.startOffset.toFloat() / totalWidth.toFloat()) * timelineWidth
     val width = (timelineEvent.width.toFloat() / totalWidth.toFloat()) * timelineWidth
     val topOffset = timelineEvent.lane * (50 + 10)
 
-    // Format dates for display
     val dateFormat = SimpleDateFormat("MMM dd", Locale.getDefault())
     val startDateStr = dateFormat.format(timelineEvent.event.startDate)
     val endDateStr = dateFormat.format(timelineEvent.event.endDate)
@@ -46,7 +43,7 @@ fun TimelineEventBlock(
                 x = leftOffset.dp,
                 y = topOffset.dp
             )
-            .width(maxOf(width.dp, 80.dp)) // Minimum width for visibility
+            .width(maxOf(width.dp, 80.dp))
             .height(laneHeight)
             .background(
                 color = timelineEvent.eventType.color,
