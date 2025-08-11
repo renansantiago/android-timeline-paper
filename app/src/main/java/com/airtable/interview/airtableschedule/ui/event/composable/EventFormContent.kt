@@ -152,6 +152,9 @@ private fun DateSelector(
                             val calendar = Calendar.getInstance()
                             calendar.timeInMillis = millis
                             
+                            // Handling picker offset issue
+                            calendar.add(Calendar.DAY_OF_YEAR, 1)
+                            
                             // Create a new Date object with just the date components
                             val localCalendar = Calendar.getInstance()
                             localCalendar.set(calendar.get(Calendar.YEAR), 
