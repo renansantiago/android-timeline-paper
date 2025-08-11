@@ -9,8 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.airtable.interview.airtableschedule.domain.models.TimelineEvent
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun TimelineEventBlock(
@@ -19,44 +22,61 @@ fun TimelineEventBlock(
     totalWidth: Long
 ) {
     val laneHeight = 50.dp
-    val laneSpacing = 6.dp
+    val laneSpacing = 10.dp
+    
+    // Calculate positions based on the actual timeline width
+    val timelineWidth = maxOf(1000, (totalWidth * 20).toInt()) - 32
+    val leftOffset = (timelineEvent.startOffset.toFloat() / totalWidth.toFloat()) * timelineWidth
+    val width = (timelineEvent.width.toFloat() / totalWidth.toFloat()) * timelineWidth
+    val topOffset = timelineEvent.lane * (50 + 10)
 
-    val leftOffset = (timelineEvent.startOffset.toFloat() / totalWidth.toFloat()) * 100f
-    val width = (timelineEvent.width.toFloat() / totalWidth.toFloat()) * 100f
-    val topOffset = (timelineEvent.lane * (50 + 6)).dp
-
-    val eventColor = when (timelineEvent.lane % 4) {
-        0 -> MaterialTheme.colorScheme.primaryContainer
-        1 -> MaterialTheme.colorScheme.secondaryContainer
-        2 -> MaterialTheme.colorScheme.tertiaryContainer
-        else -> MaterialTheme.colorScheme.surfaceVariant
+    // Format dates for display
+    val dateFormat = SimpleDateFormat("MMM dd", Locale.getDefault())
+    val startDateStr = dateFormat.format(timelineEvent.event.startDate)
+    val endDateStr = dateFormat.format(timelineEvent.event.endDate)
+    val dateRange = if (timelineEvent.event.startDate == timelineEvent.event.endDate) {
+        startDateStr
+    } else {
+        "$startDateStr - $endDateStr"
     }
 
     Box(
         modifier = Modifier
             .offset(
-                x = (leftOffset * 0.01f * 1000).dp,
-                y = topOffset
+                x = leftOffset.dp,
+                y = topOffset.dp
             )
-            .width((width * 0.01f * 1000).dp)
+            .width(maxOf(width.dp, 80.dp)) // Minimum width for visibility
             .height(laneHeight)
             .background(
-                color = eventColor,
+                color = timelineEvent.eventType.color,
                 shape = MaterialTheme.shapes.medium
             )
             .border(
-                width = 2.dp,
-                color = MaterialTheme.colorScheme.primary,
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
                 shape = MaterialTheme.shapes.medium
             )
-            .padding(12.dp),
-        contentAlignment = Alignment.Center
+            .padding(8.dp),
+        contentAlignment = Alignment.CenterStart
     ) {
-        Text(
-            text = timelineEvent.event.name,
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Medium,
-            maxLines = 1
-        )
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = timelineEvent.event.name,
+                style = MaterialTheme.typography.bodySmall,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onPrimary,
+                maxLines = 1
+            )
+            Text(
+                text = dateRange,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f),
+                maxLines = 1
+            )
+        }
     }
 }

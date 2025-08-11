@@ -2,45 +2,57 @@ package com.airtable.interview.airtableschedule.domain.usecases
 
 import com.airtable.interview.airtableschedule.domain.models.Event
 import com.airtable.interview.airtableschedule.domain.models.TimelineEvent
-import java.util.Date
+import java.util.*
 
 class TimelineLayoutUseCase {
-    fun calculateLayout(events: List<Event>): List<TimelineEvent> {
-        if (events.isEmpty()) return emptyList()
+    
+    fun calculateTimelineLayout(events: List<Event>): List<TimelineEvent> {
         val validEvents = events.filter { it.endDate >= it.startDate }
         if (validEvents.isEmpty()) return emptyList()
+        
         val sortedEvents = validEvents.sortedBy { it.startDate }
-        val lanes = mutableListOf<Date>()
-        val result = mutableListOf<TimelineEvent>()
+        val timelineEvents = mutableListOf<TimelineEvent>()
+        val lanes = mutableListOf<Long>()
+        
         for (event in sortedEvents) {
-            val laneIndex = findAvailableLane(lanes, event.startDate)
-            if (laneIndex >= lanes.size) {
-                lanes.add(event.endDate)
+            val lane = findAvailableLane(event.startDate, event.endDate, lanes)
+            val startOffset = calculateStartOffset(event.startDate, sortedEvents.first().startDate)
+            val width = calculateWidth(event.startDate, event.endDate)
+            
+            timelineEvents.add(
+                TimelineEvent(
+                    event = event,
+                    lane = lane,
+                    startOffset = startOffset,
+                    width = width,
+                    eventType = event.eventType
+                )
+            )
+            
+            if (lane >= lanes.size) {
+                lanes.add(event.endDate.time)
             } else {
-                lanes[laneIndex] = event.endDate
+                lanes[lane] = event.endDate.time
             }
-            val startOffset = calculateStartOffset(event.startDate, validEvents)
-            val width = calculateWidth(event.startDate, event.endDate, validEvents)
-            result.add(TimelineEvent(event, laneIndex, startOffset, width))
         }
-        return result
+        
+        return timelineEvents
     }
-
-    private fun findAvailableLane(lanes: List<Date>, startDate: Date): Int {
+    
+    private fun findAvailableLane(startDate: Date, endDate: Date, lanes: List<Long>): Int {
         for (i in lanes.indices) {
-            if (startDate >= lanes[i]) {
+            if (lanes[i] <= startDate.time) {
                 return i
             }
         }
         return lanes.size
     }
-
-    private fun calculateStartOffset(startDate: Date, allEvents: List<Event>): Long {
-        val earliestDate = allEvents.minOf { it.startDate }
-        return (startDate.time - earliestDate.time) / (24 * 60 * 60 * 1000)
+    
+    private fun calculateStartOffset(eventStart: Date, timelineStart: Date): Long {
+        return (eventStart.time - timelineStart.time) / (24 * 60 * 60 * 1000)
     }
-
-    private fun calculateWidth(startDate: Date, endDate: Date, allEvents: List<Event>): Long {
-        return (endDate.time - startDate.time) / (24 * 60 * 60 * 1000) + 1
+    
+    private fun calculateWidth(startDate: Date, endDate: Date): Long {
+        return ((endDate.time - startDate.time) / (24 * 60 * 60 * 1000)) + 1
     }
 }

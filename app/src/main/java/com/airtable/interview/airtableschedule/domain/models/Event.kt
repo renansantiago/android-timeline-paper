@@ -3,8 +3,9 @@ package com.airtable.interview.airtableschedule.domain.models
 import java.util.Date
 
 data class Event(
-    val id: Int, 
-    val startDate: Date, 
-    val endDate: Date, 
-    val name: String
+    val id: String,
+    val name: String,
+    val startDate: Date,
+    val endDate: Date,
+    val eventType: EventType
 )
